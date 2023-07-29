@@ -3,36 +3,6 @@ import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
 import { useState, useRef } from "react";
 
-// const dummyList = [
-//   {
-//     id: 1,
-//     author: "전경민",
-//     content: "안녕",
-//     emotion: 1,
-//     created_date: new Date().getTime(),
-//   },
-//   {
-//     id: 2,
-//     author: "김철수",
-//     content: "안녕1",
-//     emotion: 4,
-//     created_date: new Date().getTime(),
-//   },
-//   {
-//     id: 3,
-//     author: "김짱구",
-//     content: "안녕2",
-//     emotion: 5,
-//     created_date: new Date().getTime(),
-//   },
-//   {
-//     id: 4,
-//     author: "김유리",
-//     content: "안녕3",
-//     emotion: 2,
-//     created_date: new Date().getTime(),
-//   },
-// ];
 function App() {
   const [data, setData] = useState([]);
 
@@ -51,10 +21,25 @@ function App() {
     dataId.current += 1;
     setData([newItem, ...data]); // 새로운 일기가 제일 윗부분에 위치하도록
   };
+
+  const onRemove = (targetId) => {
+    console.log(`${targetId}가 삭제되었습니다.`);
+    const newDiaryList = data.filter((it) => it.id !== targetId);
+    console.log(newDiaryList);
+    setData(newDiaryList);
+  };
+
+  const onEdit = (targetId, newContent) => {
+    setData(
+      data.map((it) =>
+        it.id === targetId ? { ...it, content: newContent } : it
+      )
+    );
+  };
   return (
     <div className="App">
       <DiaryEditor onCreate={onCreate} />
-      <DiaryList diaryList={data} />
+      <DiaryList diaryList={data} onRemove={onRemove} onEdit={onEdit} />
     </div>
   );
 }
