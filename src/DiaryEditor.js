@@ -1,6 +1,10 @@
-import { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 const DiaryEditor = ({ onCreate }) => {
+  useEffect(() => {
+    console.log("DiaryEditor rendering!");
+  });
+
   const authorInput = useRef();
   const contentInput = useRef();
 
@@ -10,13 +14,7 @@ const DiaryEditor = ({ onCreate }) => {
     emotion: 1,
   });
 
-  // const [author, setAuthor] = useState("");
-  // const [content, setContent] = useState("");
-
   const handleChangeState = (e) => {
-    console.log(e.target.name);
-    console.log(e.target.value);
-
     setState({
       ...state,
       [e.target.name]: e.target.value,
@@ -81,4 +79,4 @@ const DiaryEditor = ({ onCreate }) => {
   );
 };
 
-export default DiaryEditor;
+export default React.memo(DiaryEditor);

@@ -1,10 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useCallback, useState, useRef, useEffect, useMemo } from "react";
 import "./App.css";
 import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
-// import Lifecycle from "./Lifecycle";
-
-// https://jsonplaceholder.typicode.com/comments
 
 function App() {
   const [data, setData] = useState([]);
@@ -33,7 +30,7 @@ function App() {
     getData();
   }, []);
   // 새로운 일기를 추가하는 함수
-  const onCreate = (author, content, emotion) => {
+  const onCreate = useCallback((author, content, emotion) => {
     const created_date = new Date().getTime();
     const newItem = {
       author,
@@ -43,13 +40,11 @@ function App() {
       id: dataId.current,
     };
     dataId.current += 1;
-    setData([newItem, ...data]); // 새로운 일기가 제일 윗부분에 위치하도록
-  };
+    setData((data) => [newItem, ...data]); // 함수형 업데이트
+  }, []);
 
   const onRemove = (targetId) => {
-    console.log(`${targetId}가 삭제되었습니다.`);
     const newDiaryList = data.filter((it) => it.id !== targetId);
-    console.log(newDiaryList);
     setData(newDiaryList);
   };
 
@@ -60,10 +55,23 @@ function App() {
       )
     );
   };
+
+  const getDiaryAnalysis = useMemo(() => {
+    const goodCount = data.filter((it) => it.emotion >= 3).length;
+    const badCount = data.length - goodCount;
+    const goodRatio = (goodCount / data.length) * 100;
+    return { goodCount, badCount, goodRatio };
+  }, [data.length]);
+
+  const { goodCount, badCount, goodRatio } = getDiaryAnalysis;
+
   return (
     <div className="App">
-      {/* <Lifecycle /> */}
       <DiaryEditor onCreate={onCreate} />
+      <div>전체일기: {data.length}</div>
+      <div>기분 좋은 일기 개수: {goodCount}</div>
+      <div>기분 나쁜 일기 개수: {badCount}</div>
+      <div>기분이 좋은 일기 비율: {goodRatio}</div>
       <DiaryList diaryList={data} onRemove={onRemove} onEdit={onEdit} />
     </div>
   );
