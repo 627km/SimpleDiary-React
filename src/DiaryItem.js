@@ -1,16 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
-const DiaryItem = ({
-  author,
-  content,
-  created_date,
-  emotion,
-  id,
-  onRemove,
-  onEdit,
-}) => {
-  useEffect(() => {
-    console.log(`${id}번째 아이템 리렌더`);
-  });
+import React, { useEffect, useState, useRef, useContext } from "react";
+import { DiaryDispatchContext } from "./App";
+const DiaryItem = ({ author, content, created_date, emotion, id }) => {
+  const { onEdit, onRemove } = useContext(DiaryDispatchContext);
   const [isEdit, setIsEdit] = useState(false);
 
   // 원래 isEdit이 갖고있던 값을 반전시키는 함수
